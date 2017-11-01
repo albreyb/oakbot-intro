@@ -2,7 +2,7 @@
 
 const dotenv = require('dotenv');
 
-// Load env variables
+// Load environment variables
 dotenv.config()
 
 const config = {
