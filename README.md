@@ -49,16 +49,17 @@ npm install
 npm start
 ```
 
-Click the following link to browse to the webhook route on your [localhost](http://localhost:5000/webhook)
+In the browser, navigate to the webhook route on your [localhost](http://localhost:5000/webhook)
 
 *At this point, your browser should show a 'Forbidden' status and your server should output an error message stating: 'Failed validation. Validation token mismatch'*
+
 
 ### Start up the ngrok server within another terminal 
 ```bash
 ngrok http 5000
 ```
 
-Click the following link to the webhook route on the public url provided to you by ngrok, e.g. <https://99fca400.ngrok.io/webhook>
+In the browser, navigate to your webhook route on the public url provided to you by ngrok, e.g. <https://99fca400.ngrok.io/webhook>
 
 Confirm that you recieve the same status and log message as earlier
 
