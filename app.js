@@ -679,8 +679,9 @@ function callSendAPI(messageData) {
 /*
  * Start your server
  */
-app.listen(app.get('port'), function() {
+app.listen(process.env.PORT || app.get('port'), function() {
   console.log('[app.listen] Node app is running on port', app.get('port'));
+  console.log('[app.listen] Node app is running on HEROKU', process.env.PORT);
 });
 
 module.exports = app;
