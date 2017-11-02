@@ -13,6 +13,7 @@ app.set('port', config.port);
 app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
+var port = process.env.PORT || 5000
 
 // App Dashboard > Dashboard > click the Show button in the App Secret field
 const APP_SECRET = config.appSecret;
@@ -682,7 +683,7 @@ function callSendAPI(messageData) {
 
 app.listen(process.env.PORT || app.get('port'), function() {
   console.log('[app.listen] Node app is running on port', app.get('port'));
-  console.log(process.env);
+  console.log(process.env);ro
 });
 
 module.exports = app;
