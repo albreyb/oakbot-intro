@@ -42,6 +42,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN)) {
  * https://developers.facebook.com/docs/graph-api/webhooks#setup
  *
  */
+
 function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
 
@@ -151,6 +152,7 @@ function processPostbackMessage(event) {
  * Called when a message is sent to your page. 
  * 
  */
+
 function processMessageFromPage(event) {
   var senderID = event.sender.id;
   var pageID = event.recipient.id;
@@ -181,7 +183,7 @@ function processMessageFromPage(event) {
       
       default:
         // otherwise, just echo it back to the sender
-        sendTextMessage(senderID, messageText);
+        sendTextMessage(senderID, 'Welcome to the DevCircles: Oakland Bot. How can I help you?');
     }
   }
 }
@@ -198,27 +200,22 @@ function sendHelpOptionsAsQuickReplies(recipientId) {
       id: recipientId
     },
     message: {
-      text: "Select a feature to learn more.",
+      text: "Welcome to the DevCircles: Oakland Bot. How can I help you?",
       quick_replies: [
         { 
           "content_type":"text",
-          "title":"Rotation",
-          "payload":"QR_ROTATION_1" 
+          "title":"Upcoming Events",
+          "payload":"QR_EVENTS_1" 
         },
         { 
           "content_type":"text",
-          "title":"Photo",
-          "payload":"QR_PHOTO_1" 
+          "title":"Learn About Bots",
+          "payload":"QR_BOTS_1" 
         },
         { 
           "content_type":"text",
-          "title":"Caption",
-          "payload":"QR_CAPTION_1" 
-        },
-        { 
-          "content_type":"text",
-          "title":"Background",
-          "payload":"QR_BACKGROUND_1" 
+          "title":"Other",
+          "payload":"QR_OTHER_1" 
         }
       ]
     }
@@ -248,22 +245,28 @@ function handleQuickReplyResponse(event) {
  */
 function respondToHelpRequest(senderID, payload) {
   // set useGenericTemplates to false to send image attachments instead of generic templates
-  var useGenericTemplates = true; 
+  // var beginningOfConversation = true;
   var messageData = {};
-  
-  if (useGenericTemplates) {
+
+  // if (beginningOfConversation === true){
     // respond to the sender's help request by presenting a carousel-style 
     // set of screenshots of the application in action 
     // each response includes all the content for the requested feature
     messageData = getGenericTemplates(senderID, payload);
-  } else {
+    // beginningOfConversation === false;
+  
+  // } else {
     // respond to the help request by presenting one image at a time
-    messageData = getImageAttachments(senderID, payload);
-  }
-
-  callSendAPI(messageData);  
+  // }  
+  callSendAPI(messageData);
 }
 
+function respondToTemplateRequest(senderID, payload) {
+  var messageData = {};
+
+  messageData = getImageAttachments(senderID, payload);  
+  callSendAPI(messageData);
+}
 
 /*
  * This response uses templateElements to present the user with a carousel
@@ -271,53 +274,72 @@ function respondToHelpRequest(senderID, payload) {
  * left and right to see it
  *
  */
+
 function getGenericTemplates(recipientId, requestForHelpOnFeature) {
   console.log("[getGenericTemplates] handling help request for %s",
     requestForHelpOnFeature);
   var templateElements = [];
   var sectionButtons = [];
+  var urlButtons = [];
   // each button must be of type postback but title
   // and payload are variable depending on which 
   // set of options you want to provide
-  var addSectionButton = function(title, payload) {
-    sectionButtons.push({
-      type: 'postback',
-      title: title,
-      payload: payload
-    });
-  }
+  var addSectionButton = function(title, payload, url) {
+    if (url) {
+      sectionButtons.push({
+        type: 'web_url',
+        url: url,
+        title: title,
+      });
+    } else {
+      sectionButtons.push({
+        type: 'postback',
+        title: title,
+        payload: payload
+      });
+
+    }
+  };
 
   // Since there are only four options in total, we will provide 
   // buttons for each of the remaining three with each section. 
   // This provides the user with maximum flexibility to navigate
 
   switch (requestForHelpOnFeature) {
-    case 'QR_ROTATION_1':
-      addSectionButton('Photo', 'QR_PHOTO_1');
-      addSectionButton('Caption', 'QR_CAPTION_1');
-      addSectionButton('Background', 'QR_BACKGROUND_1');
+    case 'QR_EVENTS_1':
+      addSectionButton('Apply Today', 'QR_SIGNUP_1', 'http://bit.ly/2ze0kkB');
+      addSectionButton('Learn More', 'QR_LEARNMORE_1', 'http://bothackathonoak.tilda.ws/');
+      addSectionButton('Volunteer', 'QR_VOLUNTEER_1');
       
       templateElements.push(
         {
-          title: "Rotation",
-          subtitle: "portrait mode",
+          title: "11/18 Bots Hackathon",
+          subtitle: "Food, fun, prizes and more. Sign up today.",
           image_url: IMG_BASE_PATH + "01-rotate-landscape.png",
-          buttons: sectionButtons 
+          buttons: sectionButtons
         }, 
         {
-          title: "Rotation",
-          subtitle: "landscape mode",
+          title: "11/9 Bots Workshop",
+          subtitle: "Join a workshop before the Hackathon!",
+          image_url: IMG_BASE_PATH + "02-rotate-portrait.png",
+          buttons: sectionButtons 
+        }, 
+
+        {
+          title: "11/9 Bots Workshop",
+          subtitle: "Join a workshop before the Hackathon!",
           image_url: IMG_BASE_PATH + "02-rotate-portrait.png",
           buttons: sectionButtons 
         }
       );
     break; 
-    case 'QR_PHOTO_1':
+    case 'QR_BOTS_1':
       addSectionButton('Rotation', 'QR_ROTATION_1');
       addSectionButton('Caption', 'QR_CAPTION_1');
       addSectionButton('Background', 'QR_BACKGROUND_1');
 
       templateElements.push(
+
         {
           title: "Photo Picker",
           subtitle: "click to start",
@@ -338,7 +360,7 @@ function getGenericTemplates(recipientId, requestForHelpOnFeature) {
         }        
       );
     break; 
-    case 'QR_CAPTION_1':
+    case 'QR_OTHER_1':
       addSectionButton('Rotation', 'QR_ROTATION_1');
       addSectionButton('Photo', 'QR_PHOTO_1');
       addSectionButton('Background', 'QR_BACKGROUND_1');
@@ -370,7 +392,7 @@ function getGenericTemplates(recipientId, requestForHelpOnFeature) {
         }
       );
     break; 
-    case 'QR_BACKGROUND_1':
+    case 'QR_SIGNUP_1':
       addSectionButton('Rotation', 'QR_ROTATION_1');
       addSectionButton('Photo', 'QR_PHOTO_1');
       addSectionButton('Caption', 'QR_CAPTION_1');
