@@ -315,18 +315,18 @@ function getGenericTemplates(recipientId, requestForHelpOnFeature) {
         {
           title: "11/18 Bots Hackathon",
           subtitle: "Food, fun, prizes and more. Sign up today.",
-          image_url: IMG_BASE_PATH + "01-rotate-landscape.png",
+          image_url: "https://albreyb.github.io/botsHackathonPNG.png",
           buttons: sectionButtons
         }, 
         {
           title: "11/9 Bots Workshop",
           subtitle: "Join a workshop before the Hackathon!",
-          image_url: IMG_BASE_PATH + "02-rotate-portrait.png",
+          image_url: "https://albreyb.github.io/facebook-dev-circles.png",
           buttons: sectionButtons 
         }, 
 
         {
-          title: "11/9 Bots Workshop",
+          title: "11/2 Bots Workshop",
           subtitle: "Join a workshop before the Hackathon!",
           image_url: IMG_BASE_PATH + "02-rotate-portrait.png",
           buttons: sectionButtons 
